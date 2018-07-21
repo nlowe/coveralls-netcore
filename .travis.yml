@@ -1,0 +1,13 @@
+language: csharp
+mono: none
+dotnet: 2.1
+dist: trusty
+
+before_install:
+- dotnet tool install -g coveralls.net --version 1.0.0
+
+script:
+- ./build/travis.sh
+
+after_script:
+- ~/.dotnet/tools/csmacnz.Coveralls --input opencovercoverage.xml --opencover --serviceName travis
