@@ -1,4 +1,4 @@
-#addin "Cake.MiniCover"
+#addin "nuget:?package=Cake.MiniCover&version=0.29.0-next20180721071547&prerelease"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -56,9 +56,25 @@ Task("Test")
             .WithAssembliesMatching("./test/**/*.dll")
             .WithSourcesMatching("./src/**/*.cs")
             .WithNonFatalThreshold()
-            .GenerateReport(ReportType.CONSOLE | ReportType.OPENCOVER)
+            .GenerateReport(ReportType.CONSOLE)
     );
     
+});
+
+Task("Coveralls")
+    .IsDependentOn("Test")
+    .Does(() => 
+{
+    if (!TravisCI.IsRunningOnTravisCI)
+    {
+        Warning("Not running on travis, cannot publish coverage");
+        return;
+    }
+
+    MiniCoverReport(new MiniCoverSettings()
+        .WithCoverallsSettings(c => c.UseTravisDefaults())
+        .GenerateReport(ReportType.COVERALLS)
+    );
 });
 
 //////////////////////////////////////////////////////////////////////

@@ -5,7 +5,7 @@
 # Feel free to change this file to fit your needs.
 ##########################################################################
 
-set -eo pipefail
+set -euo pipefail
 
 command -v dotnet >/dev/null 2>&1 || { 
     echo >&2 "This project requires dotnet core but it could not be found"
@@ -15,7 +15,7 @@ command -v dotnet >/dev/null 2>&1 || {
 
 SCRIPT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TOOLS_DIR=${TOOLS_DIR:-"${SCRIPT_ROOT}/tools"}
-CAKE_VERSION=${CAKE_VERSION:-0.28.1}
+CAKE_VERSION=${CAKE_VERSION:-0.29.0}
 CAKE_NETCOREAPP_VERSION=${CAKE_NETCOREAPP_VERSION:-2.0}
 
 mkdir -p "${TOOLS_DIR}"
@@ -73,5 +73,5 @@ fi
 if $SHOW_VERSION; then
     exec dotnet "$CAKE_DLL" -version
 else
-    exec dotnet "$CAKE_DLL" "${SCRIPT}" "-verbosity=${VERBOSITY}" "-configuration=${CONFIGURATION}" "-target=${TARGET}" "${DRYRUN}" "${SCRIPT_ARGUMENTS[@]}"
+    exec dotnet "$CAKE_DLL" "${SCRIPT}" "-verbosity=${VERBOSITY}" "-configuration=${CONFIGURATION}" "-target=${TARGET}" "${DRYRUN}" "${SCRIPT_ARGUMENTS[@]+\"\$\{SCRIPT_ARGUMENTS[@]\}\"}"
 fi
